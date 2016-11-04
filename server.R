@@ -36,7 +36,7 @@ LDA.twtter<- function(tweets, k){
   
   corpus<- Corpus(VectorSource(text))
   corpus <- tm_map(corpus,
-                   content_transformer(function(x) iconv(x, to='UTF', sub='byte')),
+                   content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
