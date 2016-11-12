@@ -1,8 +1,8 @@
 # twitterViz
 
-This is a small project for interactive analysis of tweets.
+My practice for interactive analysis of tweets.
 
-## take a look at it on shinyapps.io
+## take a look on shinyapps.io
 https://humblelu.shinyapps.io/twitterviz/
 
 ## run this app in R
