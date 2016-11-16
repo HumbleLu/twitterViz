@@ -17,7 +17,7 @@ wordcloud.twitter<- function(tweeets, n = 1000, min.freq = 10){
   
   corpus<- Corpus(VectorSource(text))
   corpus <- tm_map(corpus,
-                   content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
+                   content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')),
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
@@ -37,6 +37,7 @@ LDA.twtter<- function(tweets, k){
   corpus<- Corpus(VectorSource(text))
   corpus <- tm_map(corpus,
                    content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
+                   #content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')),
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
@@ -49,14 +50,32 @@ LDA.twtter<- function(tweets, k){
   LDA(dtm, k = k, method = 'Gibbs')
 }
 
+library(ggplot2)
+
 ## Server
 shinyServer(
   function(input, output) {
-    v <- reactiveValues(tweets = NULL)
+    v <- reactiveValues(tweets = NULL, topics = NULL)
     
     observeEvent(input$search, {
       withProgress(message = 'Get tweets from Twitter', {
         v$tweets <- searchTwitter(input$key_word, n = input$numOfTweetes)
+      })
+      withProgress(message = 'LDA modeling', {
+        v$topics <- LDA.twtter(v$tweets, input$numOfTopics)
+      })
+    })
+    
+    observeEvent(input$numOfTopics, {
+      withProgress(message = 'LDA modeling', {
+        v$topics <- LDA.twtter(v$tweets, input$numOfTopics)
+      })
+    })
+    
+    output$word_map <- renderPlot({
+      if (is.null(v$tweets)) return(NULL)
+      withProgress(message = "wordcloud", {
+        wordcloud.twitter(v$tweets)
       })
     })
     
@@ -68,19 +87,19 @@ shinyServer(
            col = "grey")
     })
     
-    output$word_map <- renderPlot({
-      if (is.null(v$tweets)) return()
-      withProgress(message = "wordcloud", {
-        wordcloud.twitter(v$tweets)
-      })
+    output$topics<- renderPrint({
+      if (is.null(v$tweets)) return(NULL)
+      terms(v$topics, input$numOfTopTerms)
     })
     
-    output$topics<- renderPrint({
-      if (is.null(v$tweets)) return()
-      withProgress(message = "Topic modeling", {
-        terms(LDA.twtter(v$tweets, input$numOfTopics), input$numOfTopTerms)
-      })
+    output$retw_topics<- renderPlot({
+      if (is.null(v$tweets)) return(NULL)
+      reTweetNum<- crossprod(v$topics@gamma, sapply(v$tweets, function(x) x$getRetweetCount()))
+      reTweetNum<- data.frame(num = reTweetNum, topic = sapply(1:input$numOfTopics, function(x) paste("topic", x)))
+      g<- ggplot(reTweetNum, aes(topic, num)) + geom_bar(stat = "identity") + xlab("") + ylab("")
+      g
     })
   }
-  
 )
+
+

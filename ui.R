@@ -31,7 +31,8 @@ shinyUI(
         tabsetPanel(
           tabPanel("Wordcloud", plotOutput(outputId = "word_map", height = "500px")),
           tabPanel("Histogram of Retweet Count", plotOutput(outputId = "hist", height = "500px")),
-          tabPanel("Topics Analysis", verbatimTextOutput('topics'))
+          tabPanel("Extracted Topics", verbatimTextOutput('topics')),
+          tabPanel("Retweetable Topics", plotOutput('retw_topics'))
         )
       )
     )
