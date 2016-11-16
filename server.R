@@ -17,7 +17,8 @@ wordcloud.twitter<- function(tweeets, n = 1000, min.freq = 10){
   
   corpus<- Corpus(VectorSource(text))
   corpus <- tm_map(corpus,
-                   content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')),
+                   content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
+                   ##content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')),
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
@@ -37,7 +38,7 @@ LDA.twtter<- function(tweets, k){
   corpus<- Corpus(VectorSource(text))
   corpus <- tm_map(corpus,
                    content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
-                   #content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')),
+                   #content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')), for mac user (I am)
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
