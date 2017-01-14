@@ -30,9 +30,19 @@ shinyUI(
       mainPanel(
         tabsetPanel(
           tabPanel("Wordcloud", plotOutput(outputId = "word_map", height = "500px")),
-          tabPanel("Histogram of Retweet Count", plotOutput(outputId = "hist", height = "500px")),
+          ## tabPanel("Histogram of Retweet Count", plotOutput(outputId = "hist", height = "500px")), 
+          ## shut down this bloody boring thing at 20170114
           tabPanel("Extracted Topics", verbatimTextOutput('topics')),
-          tabPanel("Retweetable Topics", plotOutput('retw_topics'))
+          tabPanel("Retweetable Topics", plotOutput('retw_topics')),
+          tabPanel("Analyze your tweet!", 
+                   textAreaInput(inputId = "tweet_input", 
+                             label = "Enter your tweet",
+                             width = "500"
+                   ),
+                   # actionButton("analyze",
+                   #              label = "Analyze Tweet!",
+                   #              icon = icon("cogs", lib = "font-awesome")),
+                   plotOutput('radar_chart'))
         )
       )
     )
