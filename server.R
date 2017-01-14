@@ -1,3 +1,7 @@
+format<- 'UTF-8'
+## format<- 'UTF-8-MAC'
+ 
+
 library(shiny)
 
 ## Twitter API
@@ -23,7 +27,7 @@ wordcloud.twitter<- function(tweeets, n = 1000, min.freq = 10){
   corpus<- Corpus(VectorSource(text))
   corpus <- tm_map(corpus,
                    ## content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
-                   content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')),
+                   content_transformer(function(x) iconv(x, to=format, sub='byte')),
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
@@ -43,7 +47,7 @@ LDA.twitter<- function(tweets, k, alpha = .1, delta = .001){
   corpus<- Corpus(VectorSource(text))
   corpus <- tm_map(corpus,
                    ## content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
-                   content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')), # for mac user (I am)
+                   content_transformer(function(x) iconv(x, to=format, sub='byte')), # for mac user (I am)
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
@@ -60,7 +64,7 @@ predict_topics<- function(tweets, lda){
   corpus<- Corpus(VectorSource(tweets))
   corpus <- tm_map(corpus,
                    ## content_transformer(function(x) iconv(x, to='UTF-8', sub='byte')),
-                   content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')), # for mac user (I am)
+                   content_transformer(function(x) iconv(x, to=format, sub='byte')), # for mac user (I am)
                    mc.cores=1
   )
   corpus <- tm_map(corpus, content_transformer(tolower), mc.cores=1)
